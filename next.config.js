@@ -1,14 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { isServer, webpack }) => {
-    // Handle crypto polyfills for browser
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false,
-        crypto: require.resolve('crypto-browserify'),
+        // Removed crypto-browserify
         stream: require.resolve('stream-browserify'),
         buffer: require.resolve('buffer'),
         util: require.resolve('util'),
@@ -16,7 +15,6 @@ const nextConfig = {
         assert: require.resolve('assert'),
       };
 
-      // Add buffer polyfill
       config.plugins.push(
         new webpack.ProvidePlugin({
           Buffer: ['buffer', 'Buffer'],
@@ -25,7 +23,7 @@ const nextConfig = {
       );
     }
 
-    // Handle problematic modules
+    // Remove duplicate alias declaration
     config.resolve.alias = {
       ...config.resolve.alias,
       '@injectivelabs/token-metadata': false,
@@ -41,7 +39,6 @@ const nextConfig = {
       });
     }
 
-    // Enable top-level await
     config.experiments = {
       ...config.experiments,
       topLevelAwait: true,
@@ -57,3 +54,4 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+
